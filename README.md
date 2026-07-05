@@ -301,3 +301,86 @@ Oh, I googled "spiffe attestation", and found a paper!
 https://arxiv.org/html/2504.14760v1
 > Establishing Workload Identity for Zero Trust CI/CD:
 > From Secrets to SPIFFE-Based Authentication
+
+TODO: read the paper & write some thoughts here
+
+
+== A bunch of my questions get answered by a particular page
+
+Wow, this page (written by a guy who works for Aembit, I believe) answered
+a ton of my questions about SPIFFE, without mentioning it directly.
+Sounds to me like SPIFFE is one example of "IAM for Agentic AI".
+
+https://securityboulevard.com/2026/04/what-is-iam-for-agentic-ai-the-new-perimeter-of-trust-in-2026/
+
+> ### Defining IAM for Agentic AI
+> When an agent needs to access a resource, it does not present a static API key.
+> Instead, it presents cryptographic attestation from a trusted provider, proof
+> that it’s running in a specific cloud account, Kubernetes namespace or AI
+> runtime environment.
+> These systems can cryptographically sign claims about workload identity
+> because they control the environments where workloads run.
+> The attestation document becomes the agent’s credential, one that is
+> cryptographically difficult to forge and tied to its runtime characteristics.
+> The credentials that result from this model look nothing like traditional
+> API keys.
+> They are short-lived, often expiring in minutes rather than months.
+> They are identity-bound, tied to a specific agent instance rather than
+> being shareable across applications.
+> And they are policy-scoped, granting only the permissions needed for a
+> specific task rather than broad access that accumulates over time.
+
+> ### Continuous Attestation
+> The agent proves it is running in a trusted, unaltered environment
+> throughout its operation, not only at startup.
+> If an agent’s environment changes, if it moves to an unexpected location,
+> or if its runtime characteristics no longer match policy expectations,
+> access can be revoked immediately.
+
+> ### Policy-Based and Conditional Access
+> Policies can incorporate real-time factors: Is this agent running in
+> production or development? What is the security posture of its host?
+> Does the request align with the agent’s expected behavior patterns?
+> Conditional access allows dynamic security decisions that adapt to
+> changing conditions rather than relying on static permission grants.
+
+> ### How IAM for Agentic AI Works in Practice
+> When an agent starts, it attests its identity via a trust provider.
+> * In a Kubernetes environment, this might mean presenting a service account
+>   token that the cluster has signed.
+> * In AWS, it could be an instance identity document from the metadata service.
+> * In a CI/CD pipeline, the platform provides an OIDC token that identifies
+>   the specific workflow run.
+>
+> The agent does not generate this proof; it receives it from the infrastructure it runs on.
+>
+> The IAM platform, such as Aembit, validates the attestation and checks policy.
+> * Is this agent identity recognized?
+> * Is it running in an approved environment?
+> * Does the requested access align with configured policies?
+> * Does the agent’s current security posture meet the requirements for this resource?
+
+**HERE IS MY BIG MOMENT OF UNDERSTANDING**: the big change SPIFFE is proposing
+is: instead of generating an access token for some resource, and then trying to
+give that token to a bunch of AI agents (sorry, "workloads), instead each AI
+agent should have an identity token generated for it by k8s (or whatever the
+agent is running in), and the agent should then pass around its *identity token*,
+instead of handing around *access tokens*.
+The identity token should include various kinds of information, like "what
+kind of agent is this", "what environment (prod/staging/dev/etc) was this
+agent running in", etc.
+The question of whether the agent is granted access to any particular resource
+can then be answered according to rules like "only production agents may
+access this resource", etc.
+Also, the identity tokens can be super short-lived, and a long-running agent
+can periodically get fresh ones -- which is exactly what we saw in SPIFFE's
+"Workload API", which uses streaming gRPC endpoints, so fresh SVIDs can be
+sent to the agent.
+
+I think I'm pretty close to feeling quite confident in my high-level
+understanding of SPIFFE at this point; I just need a better understanding
+of how an agent (sorry, workload?) includes SVIDs in its outgoing
+communications.
+I believe the answer has to do with TLS, but I'm not clear on how the agent
+actually uses the SVIDs streamed to it over gRPC.
+That's some of what I'll be looking into in [TLS.md](/TLS.md).
