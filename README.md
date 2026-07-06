@@ -307,16 +307,6 @@ And in particular:
 > to actively participate.
 
 
-## We find a paper on SPIFFE attestation
-
-I googled "spiffe attestation", and found a paper!
-https://arxiv.org/html/2504.14760v1
-> Establishing Workload Identity for Zero Trust CI/CD:
-> From Secrets to SPIFFE-Based Authentication
-
-TODO: read the paper & write some thoughts here
-
-
 ## A bunch of my questions get answered
 
 Wow, this page (written by a guy who works for Aembit, I believe) answered
