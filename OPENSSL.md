@@ -28,7 +28,7 @@ src/crypto/x509/root_linux.go
 11:	"/etc/ssl/certs/ca-certificates.crt",                // Debian/Ubuntu/Gentoo etc.
 ```
 
-Here's the full list of paths it checks:
+Here's the full list of paths Golang's root_linux.go checks for:
 ```
 // Possible certificate files; stop after finding one.
 var certFiles = []string{
@@ -65,7 +65,8 @@ Type "help", "copyright", "credits" or "license" for more information.
 '/usr/lib/python3.12/lib-dynload/_ssl.cpython-312-x86_64-linux-gnu.so'
 ```
 
-Getting closer... we found the .so file for `_ssl`, now what does it depend on?
+Getting closer... we found the .so file for the `_ssl` module, now what
+does it depend on?
 ```
 $ ldd /usr/lib/python3.12/lib-dynload/_ssl.cpython-312-x86_64-linux-gnu.so
 	linux-vdso.so.1 (0x0000780e6289c000)

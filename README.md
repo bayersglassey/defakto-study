@@ -200,7 +200,7 @@ Anyway, the X.509 "profile" consists mainly of this endpoint:
     rpc FetchX509SVID(X509SVIDRequest) returns (stream X509SVIDResponse);
 ```
 
-...while the JWT "profile" consists mainly of this endpoint:
+...while the JWT "profile" consists mainly of these endpoints:
 ```
     // Fetch JWT-SVIDs for all SPIFFE identities the workload is entitled to,
     // for the requested audience. If an optional SPIFFE ID is requested, only
@@ -249,8 +249,9 @@ By the way, the structure for an X.509 SVID is:
 ```
 
 Okay. So remember, we are a microservice, and we want a SVID, so the idea
-is that we find (via e.g. the env var) this gRPC thing and connect and hit
-one of the endpoints and get baaaaack... a stream of SVIDs?..
+is that we find (via e.g. the `SPIFFE_ENDPOINT_SOCKET` env var) this gRPC
+thing and connect and hit one of the endpoints and get baaaaack... a stream
+of SVIDs?..
 Or like, a stream of SVIDs and/or their bundles?..
 And "as this information changes, subsequent messages will be streamed from
 the server".
@@ -303,7 +304,7 @@ And in particular:
 > to actively participate.
 
 
-== We find a paper on SPIFFE attestation
+## We find a paper on SPIFFE attestation
 
 I googled "spiffe attestation", and found a paper!
 https://arxiv.org/html/2504.14760v1
@@ -313,7 +314,7 @@ https://arxiv.org/html/2504.14760v1
 TODO: read the paper & write some thoughts here
 
 
-== A bunch of my questions get answered
+## A bunch of my questions get answered
 
 Wow, this page (written by a guy who works for Aembit, I believe) answered
 a ton of my questions about SPIFFE, without mentioning it directly.
@@ -370,7 +371,7 @@ https://securityboulevard.com/2026/04/what-is-iam-for-agentic-ai-the-new-perimet
 
 **HERE IS MY BIG MOMENT OF UNDERSTANDING**: the big change SPIFFE is proposing
 is: instead of generating an access token for some resource, and then trying to
-give that token to a bunch of AI agents (sorry, "workloads), instead each AI
+give that token to a bunch of AI agents (sorry, "workloads"), instead each AI
 agent should have an identity token generated for it by k8s (or whatever the
 agent is running in), and the agent should then pass around its *identity token*,
 instead of handing around *access tokens*.

@@ -188,7 +188,6 @@ api.spirl.com:443), and opens & reads the CA certificates file.
 [pid 553588] close(6)                   = 0
 ```
 
-I'm going to assume I'm looking at the TLS handshake, here?..
 Now another thread reads some binary-looking stuff from fd 5, betcha that's
 HTTPS, and then another thread writes the message with the URL and session
 token to stdout:
