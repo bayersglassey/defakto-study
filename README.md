@@ -22,6 +22,9 @@ different than OAuth2, and have a good understanding of at least one use
 case, e.g. one interaction between two microservices using Defakto's
 platform.
 
+I also have some questions I'd like to ask Defakto, if they deign to give
+me an interview ;) See [QUESTIONS.md](/QUESTIONS.md)
+
 
 ## Defakto's "Quick Start", spirlctl
 
@@ -393,3 +396,10 @@ communications.
 I believe the answer has to do with TLS, but I'm not clear on how the agent
 actually uses the SVIDs streamed to it over gRPC.
 That's some of what I'll be looking into in [TLS.md](/TLS.md).
+
+
+## Where to go from here
+
+If I get some positive response from Defakto on the job front, next thing
+I would do would be to try out SPIRE against a local k8s cluster:
+https://github.com/spiffe/spire#learn-about-spire
