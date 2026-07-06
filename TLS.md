@@ -50,5 +50,58 @@ I'm suspecting that perhaps the idea is:
   your application doesn't do TLS itself, it just does raw TCP/HTTP/gRPC/whatever,
   and the sidecar hooks that stuff and wraps it in TLS
 
-IS THAT IT?.. DID WE GET IT?..
 
+## Brushing up on how TLS works
+
+In particular, I'm trying to figure out whether the client ever uses a private
+key.
+See also [OPENSSL.md](/OPENSSL.md), where I was looking for private keys in
+/etc/ssl/private and not finding them, and wondering whether a fresh private
+key is created for each TLS connection.
+
+I tried looking at the output of `curl -vvv https://www.example.com` and
+`openssl s_client www.example.com:443`, but didn't see a private key being
+clearly used on my end.
+
+Here's how Cloudfare describes the TLS handshake:
+https://www.cloudflare.com/learning/ssl/what-happens-in-a-tls-handshake/
+* The 'client hello' message
+* The 'server hello' message
+* Authentication
+* The premaster secret
+* Private key used
+* Session keys created
+* Client is ready
+* Server is ready
+* Secure symmetric encryption achieved
+
+...so, what are those "session keys"?..
+https://www.cloudflare.com/learning/ssl/what-is-a-session-key/
+> A session key is any symmetric cryptographic key used to encrypt one
+> communication session only.
+
+Oh interesting, it's symmetric, not a private+public pair.
+So then... this doesn't seem like it would be related to the private keys
+in SPIFFE's SVIDs.
+
+
+## Where to go from here
+
+I git cloned SPIRE locally, to see if I could see how the keys were being
+used; I searched in it for `svid_key`, and then for `SvidKey` since it's
+mostly Golang.
+I found some stuff for `SvidKey`, but it seemed to mostly just be the
+SPIRE agent storing it, not using it.
+
+TODO: read up on "signing certificates". I see them mentioned in the SVID
+docs when I search for "key":
+
+https://github.com/spiffe/spiffe/blob/main/standards/X509-SVID.md
+> An X.509 SVID signing certificate is one which has set keyCertSign
+> in the key usage extension.
+> It additionally has the cA flag set to true in the basic constraints
+> extension (see section 4.1). That is to say, it is a CA certificate.
+
+I just can't seem to find a clear description of what the key in the SVID
+is for, and that makes me suspect it should be "obvious" if you're more
+familiar with certificates...
