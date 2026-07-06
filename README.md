@@ -22,12 +22,6 @@ different than OAuth2, and have a good understanding of at least one use
 case, e.g. one interaction between two microservices using Defakto's
 platform.
 
-**NOTE ON LLM USAGE**: I didn't use an LLM for any of this.
-Maybe it makes me a dinosaur, but the best way I know of to build a mental
-model of something is to jump around between reading documentation,
-recording my thoughts, doing little experiments in a shell or REPL, and
-factoring reusable tools out of the experiments.
-
 
 ## Defakto's "Quick Start", spirlctl
 
@@ -265,12 +259,24 @@ endpoints, so fancy.
 You connect once, and then the SPIFFE infrastructure will decide to let you
 know over your open TCP connection whenever there are updates about your
 SVIDs.
+
 And what do you do with these SVIDs?.. I guess you use their certificate
 bundles wheeeeen you make TLS-secured API calls?..
 If so, how -- byyyyy adding certificates in the place the TLS libraries
 expect it, e.g. libssl?
 Or do we generate tokens from them, and use them in API calls between
 services?..
+Ah ha! I think I found the answer, and it is "sometimes certificates,
+sometimes tokens": specifically, X509 SVIDs are for TLS, and JWT SVIDs are
+for passing around as tokens.
+Per:
+https://spiffe.io/docs/latest/spiffe-about/spiffe-concepts/#spiffe-verifiable-identity-document-svid
+> As tokens are susceptible to replay attacks, in which an attacker that
+> obtains the token in transit can use it to impersonate a workload, it
+> is advised to use X.509-SVIDs whenever possible.
+> However, there may be some situations in which the only option is the JWT
+> token format, for example, when your architecture has an L7 proxy or load
+> balancer between two workloads.
 
 Now, remember earlier, we said SPIRE seems really proud of its "attestation"
 concept:
@@ -296,8 +302,10 @@ And in particular:
 > implementation-specific, the chosen method(s) MUST NOT require the workload
 > to actively participate.
 
-Hmmmm.
-Oh, I googled "spiffe attestation", and found a paper!
+
+== We find a paper on SPIFFE attestation
+
+I googled "spiffe attestation", and found a paper!
 https://arxiv.org/html/2504.14760v1
 > Establishing Workload Identity for Zero Trust CI/CD:
 > From Secrets to SPIFFE-Based Authentication
@@ -305,7 +313,7 @@ https://arxiv.org/html/2504.14760v1
 TODO: read the paper & write some thoughts here
 
 
-== A bunch of my questions get answered by a particular page
+== A bunch of my questions get answered
 
 Wow, this page (written by a guy who works for Aembit, I believe) answered
 a ton of my questions about SPIFFE, without mentioning it directly.

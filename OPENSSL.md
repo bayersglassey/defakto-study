@@ -133,6 +133,32 @@ openssl: /usr/lib/ssl
 
 Ah, the `openssl` package itself. Cool.
 
+By the way, what's in that /etc/ssl/private directory?.. presumably the
+private key my machine ends up using when it does TLS stuff?..
+```
+$ sudo ls /etc/ssl/private/
+ssl-cert-snakeoil.key
+```
+
+Sounds like it's probably not generally used. These articles mention "testing
+purposes", etc:
+* https://askubuntu.com/questions/396120/what-is-the-purpose-of-the-ssl-cert-snakeoil-key
+* https://docs.meteyou.wtf/snakeoil-certificates/
+
+TODO (although maybe we'll end up answering these in [TLS.md](/TLS.md)):
+* Out of curiosity, figure out where e.g. Chrome, curl store their private
+  SSL keys.
+  Or do they both just rely on OpenSSL for that?.. but then, where is OpenSSL
+  storing them?.. /etc/ssl/private/ only has that snakeoil key.
+  Maybe a fresh private key gets generated for each outgoing TLS connection,
+  and just stored in memory?..
+* Look into how private keys interact with certificates... I think I saw
+  somewhere that instead of generating your own private key, you should use
+  a CSR and ask one of the big CAs to create your private key, sign it, and
+  send it to you?..
+  But maybe that's just when you're a web server, presumably curl/Chrome/etc
+  don't do that.
+
 
 ## Bonus: DNS resolving stuff on my machine
 
