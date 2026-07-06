@@ -44,3 +44,24 @@ https://aembit.io/blog/aembit-vs-spiffe-spire/
 It doesn't mention Defakto there, so I would be curious to hear how Defakto
 positions itself... as simply a SPIFFE implementation, perhaps faster to
 deploy than SPIRE, but ultimately still only providing identity?..
+
+See also:
+https://www.linkedin.com/pulse/oauth2-vs-spiffe-jialin-li-o2bpc/
+> The Delegation Problem: SPIFFE does not have native delegation semantics.
+> There's no "act" claim. If you need to track "who acted on behalf of whom," you must:
+> * Manually propagate context in HTTP headers (not cryptographically protected)
+> * Use a separate context token alongside SPIFFE
+> * Implement custom solutions
+
+And:
+https://www.uber.com/us/en/blog/solving-the-agent-identity-crisis/?uclick_id=a4bc8b8d-c91e-498c-b187-a4ed4c15d0a5
+> ### Problem 1: Current Identity Model Doesn’t Describe Agency
+> ...etc...
+> ### Problem 2: Original Provenance Isn’t Effectively Carried Forward Across Agents to Systems
+> Execution context (originating user, intermediate agents) is dropped across
+> agent hops.
+> This leads to incomplete audits across the system and limits our ability
+> to consistently leverage the fine-grained access policies already configured
+> by downstream systems.
+> In the absence of complete audit trails, incident response would require
+> stitching partial audit logs across systems together.
